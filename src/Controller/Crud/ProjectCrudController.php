@@ -265,12 +265,6 @@ class ProjectCrudController extends AbstractCrudController
                 }
             }
         }
-        foreach ($entityInstance->getProjectMembers() as $projectMember) {
-            if ($projectMember->getProject()) {
-                continue;
-            }
-            $projectMember->setProject($entityInstance);
-        }
     }
 
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void

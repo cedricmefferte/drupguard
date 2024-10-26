@@ -19,7 +19,7 @@ use function Symfony\Component\Translation\t;
         'source' => '*',
     ]
 )]
-#[AppAssert\Plugin\Path()]
+#[AppAssert\Plugin\Path(checkPathFileSystem: true)]
 class Drupal7 extends PathTypeAbstract
 {
     public function __toString()

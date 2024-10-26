@@ -5,6 +5,7 @@ namespace App\Form\Plugin;
 use App\Plugin\PluginInfo;
 use App\Plugin\Service\Manager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -35,7 +36,6 @@ abstract class PluginAbstract extends AbstractType implements PluginInterface
                 ],
             ])
         ;
-        // $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreSetData'));
         foreach ($this->pluginInfo->getTypes() as $type) {
             $builder
                 ->add(u($type->getId())->camel(), $type->getFormClass(), [
@@ -48,23 +48,30 @@ abstract class PluginAbstract extends AbstractType implements PluginInterface
                 ])
             ;
         }
-    }
-
-    public function onPreSetData(FormEvent $event)
-    {
-        /**
-         * @var $data \App\Entity\Plugin\PluginAbstract
-         */
-        $data = $event->getData();
-        if ($data) {
-            foreach ($this->pluginInfo->getTypes() as $type) {
-                if ($type->getId() === $data->getType()) {
-                    continue;
+        $builder->addModelTransformer(new CallbackTransformer(
+            function ($value) {
+                if (empty($value)) {
+                    return $value;
                 }
-                $data->{'set'.mb_ucfirst(u($type->getId())->camel())}(null);
+                foreach ($this->pluginInfo->getTypes() as $type) {
+                    if ($value->getType() !== $type->getId()) {
+                        $value->{'set'.mb_ucfirst(u($type->getId())->camel())}(null);
+                    }
+                }
+                return $value;
+            },
+            function ($value) {
+                if (empty($value)) {
+                    return $value;
+                }
+                foreach ($this->pluginInfo->getTypes() as $type) {
+                    if ($value->getType() !== $type->getId()) {
+                        $value->{'set'.mb_ucfirst(u($type->getId())->camel())}(null);
+                    }
+                }
+                return $value;
             }
-            $event->setData($data);
-        }
+        ));
     }
 
     public function configureOptions(OptionsResolver $resolver): void

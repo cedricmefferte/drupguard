@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[TypeInfo(id: 'composer', name: 'Composer', type: 'build', entityClass: Composer::class, repositoryClass: ComposerRepository::class, formClass: ComposerForm::class, dependencies: [
     'source' => '*',
 ])]
-#[AppAssert\Plugin\Path()]
+#[AppAssert\Plugin\Path(checkPathFileSystem: true)]
 class Composer extends PathTypeAbstract
 {
     #[ORM\Column(length: 255)]

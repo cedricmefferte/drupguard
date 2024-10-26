@@ -19,7 +19,7 @@ use Symfony\Component\Translation\TranslatableMessage;
         'build' => 'composer',
     ]
 )]
-#[AppAssert\Plugin\Path()]
+#[AppAssert\Plugin\Path(checkPathFileSystem: true)]
 class Drupal8 extends PathTypeAbstract
 {
     public function __toString()

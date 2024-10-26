@@ -23,5 +23,9 @@ services:
 
     security.access.role_hierarchy_voter:
         class: App\Security\Voter\RoleHierarchyVoter
+
+    App\Service\SchedulerUpdateService:
+        arguments:
+            $dsn: '%env(resolve:DATABASE_URL)%'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

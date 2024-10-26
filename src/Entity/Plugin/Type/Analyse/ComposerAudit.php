@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[TypeInfo(id: 'composer_audit', name: 'Composer audit', type: 'analyse', entityClass: ComposerAudit::class, repositoryClass: ComposerAuditRepository::class, formClass: ComposerAuditForm::class, dependencies: [
     'source' => '*',
 ])]
-#[AppAssert\Plugin\Path()]
+#[AppAssert\Plugin\Path(checkPathFileSystem: true)]
 class ComposerAudit extends PathTypeAbstract
 {
     public function __toString()

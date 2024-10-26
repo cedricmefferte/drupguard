@@ -2,7 +2,7 @@
 
 namespace App\Message;
 
-abstract class ProjectAnalyseAbstract
+abstract class ProjectAnalyseAbstract implements \Stringable
 {
     private int $projectId;
 
@@ -15,5 +15,10 @@ abstract class ProjectAnalyseAbstract
     public function getProjectId(): int
     {
         return $this->projectId;
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('with project %s', $this->projectId);
     }
 }

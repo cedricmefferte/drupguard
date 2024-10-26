@@ -1,6 +1,6 @@
 # Use a stock Docksal image as the base
 ARG CLI_IMAGE
-FROM $CLI_IMAGE
+FROM ${CLI_IMAGE:-docksal/cli:php8.3}
 
 # Install the symfony CLI.
 RUN set -xe; \

@@ -58,7 +58,7 @@ class GitValidator extends ConstraintValidator
                 ->atPath('repository')
                 ->addViolation();
         }
-        if (!empty($value->getRepository()) && !empty($value->getBranch()) && !$git->isRemoteUrlReadable($this->repository, [$this->branch])) {
+        if (!empty($value->getRepository()) && !empty($value->getBranch()) && !$git->isRemoteUrlReadable($value->getRepository(), [$value->getBranch()])) {
             $this->context
                 ->buildViolation($constraint->messageBranch)
                 ->atPath('branch')
