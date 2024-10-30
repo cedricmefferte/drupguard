@@ -2,21 +2,18 @@
 
 namespace App\Form\Plugin;
 
-use App\Plugin\PluginInfo;
-use App\Plugin\Service\Manager;
+use App\Plugin\Manager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
 use function Symfony\Component\String\u;
 
 abstract class PluginAbstract extends AbstractType implements PluginInterface
 {
     protected Manager $pluginManager;
-    protected PluginInfo $pluginInfo;
+    protected \App\Plugin\Annotation\PluginInfo $pluginInfo;
 
     public function __construct(Manager $pluginManager)
     {

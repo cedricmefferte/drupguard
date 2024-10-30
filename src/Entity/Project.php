@@ -5,7 +5,7 @@ namespace App\Entity;
 use App\Entity\Plugin\Analyse;
 use App\Entity\Plugin\Build;
 use App\Entity\Plugin\Source;
-use App\ProjectEmailLevelState;
+use App\AnalyseLevelState;
 use App\ProjectState;
 use App\Repository\ProjectRepository;
 use App\Security\ProjectRoles;
@@ -76,11 +76,20 @@ class Project
     #[AppAssert\CronExpression()]
     private ?string $periodicity = null;
 
-    #[ORM\Column(type: 'integer', enumType: ProjectEmailLevelState::class)]
-    private ProjectEmailLevelState $emailLevel = ProjectEmailLevelState::NONE;
+    #[ORM\Column(type: 'integer', enumType: AnalyseLevelState::class)]
+    private AnalyseLevelState $emailLevel = AnalyseLevelState::NONE;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $emailExtra = null;
+
+    #[ORM\OneToOne()]
+    private ?Report $lastReport = null;
+
+    /**
+     * @var Collection<int, Report>
+     */
+    #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'project', orphanRemoval: true)]
+    private Collection $reports;
 
     public function __construct()
     {
@@ -88,6 +97,7 @@ class Project
         $this->sourcePlugins = new ArrayCollection();
         $this->buildPlugins = new ArrayCollection();
         $this->analysePlugins = new ArrayCollection();
+        $this->reports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -305,12 +315,12 @@ class Project
         return $this;
     }
 
-    public function getEmailLevel(): ?ProjectEmailLevelState
+    public function getEmailLevel(): ?AnalyseLevelState
     {
         return $this->emailLevel;
     }
 
-    public function setEmailLevel(ProjectEmailLevelState $emailLevel): static
+    public function setEmailLevel(AnalyseLevelState $emailLevel): static
     {
         $this->emailLevel = $emailLevel;
 
@@ -325,6 +335,48 @@ class Project
     public function setEmailExtra(?string $emailExtra): static
     {
         $this->emailExtra = $emailExtra;
+
+        return $this;
+    }
+
+    public function getLastReport(): ?Report
+    {
+        return $this->lastReport;
+    }
+
+    public function setLastReport(?Report $lastReport): static
+    {
+        $this->lastReport = $lastReport;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(Report $report): static
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports->add($report);
+            $report->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): static
+    {
+        if ($this->reports->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getProject() === $this) {
+                $report->setProject(null);
+            }
+        }
 
         return $this;
     }

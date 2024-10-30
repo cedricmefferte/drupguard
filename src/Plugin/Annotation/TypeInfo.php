@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Plugin;
+namespace App\Plugin\Annotation;
 
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;

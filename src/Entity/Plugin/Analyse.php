@@ -5,8 +5,6 @@ namespace App\Entity\Plugin;
 use App\Entity\Plugin\Type\Analyse\ComposerAudit;
 use App\Entity\Plugin\Type\Analyse\Drupal7;
 use App\Entity\Plugin\Type\Analyse\Drupal8;
-use App\Form\Plugin\Analyse as AnalyseForm;
-use App\Plugin\PluginInfo;
 use App\Repository\Plugin\Analyse as AnalyseRepository;
 use App\Validator as AppAssert;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,7 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\AssociationOverrides([
     new ORM\AssociationOverride(name: 'project', inversedBy: 'analysePlugins'),
 ])]
-#[PluginInfo(id: 'analyse', name: 'Analyse', entityClass: Analyse::class, repositoryClass: AnalyseRepository::class, formClass: AnalyseForm::class)]
 #[AppAssert\Plugin\Plugin()]
 class Analyse extends PluginAbstract
 {

@@ -2,7 +2,7 @@
 
 namespace App\Validator\Plugin;
 
-use App\Plugin\Service\Manager;
+use App\Plugin\Manager;
 use CzProject\GitPhp\Git as GitClient;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\NotBlank;

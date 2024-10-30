@@ -2,12 +2,11 @@
 
 namespace App\Form\Plugin\Type;
 
-use App\Plugin\Service\Manager;
-use App\Plugin\TypeInfo;
+use App\Plugin\Annotation\TypeInfo;
+use App\Plugin\Manager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
 use function Symfony\Component\String\u;
 
 abstract class TypeAbstract extends AbstractType

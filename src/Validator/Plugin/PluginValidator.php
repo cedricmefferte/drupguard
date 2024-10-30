@@ -3,7 +3,7 @@
 namespace App\Validator\Plugin;
 
 use App\Entity\Plugin\PluginInterface;
-use App\Plugin\Service\Manager;
+use App\Plugin\Manager;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Valid;

@@ -6,6 +6,8 @@ use App\Message\ProjectAnalysePending;
 use App\Message\ProjectAnalyseRunning;
 use App\ProjectState;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\Stamp\DispatchAfterCurrentBusStamp;
 
 #[AsMessageHandler]
 class ProjectAnalysePendingHandler extends ProjectAnalyseHandlerAbstract {
@@ -24,6 +26,10 @@ class ProjectAnalysePendingHandler extends ProjectAnalyseHandlerAbstract {
         $project->setState(ProjectState::PENDING);
         $this->entityManager->persist($project);
         $this->entityManager->flush();
-        $this->bus->dispatch(new ProjectAnalyseRunning($project->getId()));
+        $event = new ProjectAnalyseRunning($project->getId());
+        $this->bus->dispatch(
+            // Be sure sql transaction end before sending new message
+            (new Envelope($event))->with(new DispatchAfterCurrentBusStamp())
+        );
     }
 }

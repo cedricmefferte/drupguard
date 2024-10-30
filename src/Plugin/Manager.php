@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Plugin\Service;
+namespace App\Plugin;
 
 use App\Entity\Plugin\PluginInterface;
 use App\Entity\Plugin\Type\TypeInterface;
+use App\Plugin\Annotation\PluginInfo;
+use App\Plugin\Annotation\TypeInfo;
 use App\Plugin\Exception\PluginNotFound;
-use App\Plugin\PluginInfo;
-use App\Plugin\TypeInfo;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Contracts\Cache\CacheInterface;
@@ -17,7 +17,7 @@ class Manager
     protected CacheInterface $cache;
 
     /**
-     * @var PluginInfo[]
+     * @var \App\Plugin\Annotation\PluginInfo[]
      */
     protected array $plugins;
 
@@ -34,7 +34,7 @@ class Manager
         $data = $this->cache->get('app_plugins_data', function (ItemInterface $item) use ($appKernel): array {
             $finder = new Finder();
             $finder
-                ->in($appKernel->getProjectDir().'/src/Entity/Plugin')
+                ->in($appKernel->getProjectDir().'/src/Plugin/Service')
                 ->files()
                 ->name('*.php')
             ;
@@ -42,7 +42,7 @@ class Manager
             $mapClass = [];
 
             /**
-             * @var TypeInfo[]
+             * @var \App\Plugin\Annotation\TypeInfo[]
              */
             $types = [];
 
@@ -59,20 +59,10 @@ class Manager
                 $reflection = new \ReflectionClass($className);
                 $pluginAttributes = $reflection->getAttributes(PluginInfo::class);
                 $hasPluginAttributes = count($pluginAttributes) > 0;
-
                 $typeAttributes = $reflection->getAttributes(TypeInfo::class);
                 $hasTypeAttributes = count($typeAttributes) > 0;
-                if (
-                    !$reflection->isInstantiable()
-                    || (
-                        !$reflection->implementsInterface(PluginInterface::class)
-                        && !$reflection->implementsInterface(TypeInterface::class)
-                    )
-                    || (
-                        !$hasPluginAttributes
-                        && !$hasTypeAttributes
-                    )
-                ) {
+
+                if (!$hasPluginAttributes && !$hasTypeAttributes) {
                     continue;
                 }
 
@@ -81,12 +71,18 @@ class Manager
                  */
                 if ($hasTypeAttributes) {
                     $instance = $typeAttributes[0]->newInstance();
+                    if (!class_implements($instance->getEntityClass(), TypeInterface::class)) {
+                        continue;
+                    }
                     $types[$instance->getId()] = $instance;
                 } else {
                     $instance = $pluginAttributes[0]->newInstance();
+                    if (!class_implements($instance->getEntityClass(), PluginInterface::class)) {
+                        continue;
+                    }
                     $plugins[$instance->getId()] = $instance;
                 }
-
+                $instance->setServiceClass($className);
                 $mapClass[$instance->getEntityClass()] = $instance;
                 $mapClass[$instance->getRepositoryClass()] = $instance;
                 $mapClass[$instance->getFormClass()] = $instance;
@@ -112,7 +108,7 @@ class Manager
     }
 
     /**
-     * @return PluginInfo[]
+     * @return \App\Plugin\Annotation\PluginInfo[]
      */
     public function getPlugins(): array
     {

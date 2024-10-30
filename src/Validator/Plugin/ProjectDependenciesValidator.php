@@ -3,12 +3,11 @@
 namespace App\Validator\Plugin;
 
 use App\Entity\Project;
-use App\Plugin\Service\Manager;
+use App\Plugin\Manager;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
-
 use function Symfony\Component\String\u;
 
 class ProjectDependenciesValidator extends ConstraintValidator

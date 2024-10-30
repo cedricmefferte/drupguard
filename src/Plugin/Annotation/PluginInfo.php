@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Plugin;
+namespace App\Plugin\Annotation;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class PluginInfo extends Attribute

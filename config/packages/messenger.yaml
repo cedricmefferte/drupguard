@@ -1,7 +1,5 @@
 framework:
     messenger:
-        failure_transport: failed
-
         transports:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
             async:
@@ -13,31 +11,29 @@ framework:
                 retry_strategy:
                     max_retries: 3
                     multiplier: 2
-            failed: 'doctrine://default?queue_name=failed'
-
             analyse_high:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
                 options:
                     queue_name: high
                 retry_strategy:
-                    max_retries: 1
+                    max_retries: 0
 
             analyse_low:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
                 options:
                     queue_name: low
                 retry_strategy:
-                    max_retries: 1
+                    max_retries: 0
 
         default_bus: messenger.bus.default
 
-        buses:
-            messenger.bus.default:
-                middleware:
-                    - doctrine_ping_connection
-                    - doctrine_close_connection
-                    - doctrine_open_transaction_logger
-                    - doctrine_transaction
+#        buses:
+#            messenger.bus.default:
+#                middleware:
+#                    - doctrine_ping_connection
+#                    - doctrine_close_connection
+#                    - doctrine_open_transaction_logger
+#                    - doctrine_transaction
 
         routing:
             Symfony\Component\Mailer\Messenger\SendEmailMessage: async

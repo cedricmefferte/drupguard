@@ -3,7 +3,7 @@
 namespace App\Validator\Plugin;
 
 use App\Entity\Plugin\Type\PathTypeAbstract;
-use App\Plugin\Service\Manager;
+use App\Plugin\Manager;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\NotBlank;

@@ -3,8 +3,6 @@
 namespace App\Entity\Plugin\Type\Build;
 
 use App\Entity\Plugin\Type\PathTypeAbstract;
-use App\Form\Plugin\Type\Build\Composer as ComposerForm;
-use App\Plugin\TypeInfo;
 use App\Repository\Plugin\Type\Build\Composer as ComposerRepository;
 use App\Validator as AppAssert;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,10 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Table(name: 'build_composer')]
 #[ORM\Entity(repositoryClass: ComposerRepository::class)]
-#[TypeInfo(id: 'composer', name: 'Composer', type: 'build', entityClass: Composer::class, repositoryClass: ComposerRepository::class, formClass: ComposerForm::class, dependencies: [
-    'source' => '*',
-])]
-#[AppAssert\Plugin\Path(checkPathFileSystem: true)]
+#[AppAssert\Plugin\Path(checkPathFileSystem: false)]
 class Composer extends PathTypeAbstract
 {
     #[ORM\Column(length: 255)]

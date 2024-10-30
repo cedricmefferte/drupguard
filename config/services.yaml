@@ -24,6 +24,10 @@ services:
     security.access.role_hierarchy_voter:
         class: App\Security\Voter\RoleHierarchyVoter
 
+    App\Plugin\Service\Type\:
+        resource: '../src/Plugin/Service/Type'
+        tags: {name: 'app.plugin.service.type'}
+
     App\Service\SchedulerUpdateService:
         arguments:
             $dsn: '%env(resolve:DATABASE_URL)%'

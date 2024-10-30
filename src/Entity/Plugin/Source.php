@@ -4,8 +4,6 @@ namespace App\Entity\Plugin;
 
 use App\Entity\Plugin\Type\Source\Git;
 use App\Entity\Plugin\Type\Source\Local;
-use App\Form\Plugin\Source as SourceForm;
-use App\Plugin\PluginInfo;
 use App\Repository\Plugin\Source as SourceRepository;
 use App\Validator as AppAssert;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,7 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\AssociationOverrides([
     new ORM\AssociationOverride(name: 'project', inversedBy: 'sourcePlugins'),
 ])]
-#[PluginInfo(id: 'source', name: 'Source', entityClass: Source::class, repositoryClass: SourceRepository::class, formClass: SourceForm::class)]
 #[AppAssert\Plugin\Plugin()]
 class Source extends PluginAbstract
 {

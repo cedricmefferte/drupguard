@@ -7,8 +7,7 @@ use App\Entity\Plugin\PluginAbstract;
 use App\Entity\Project;
 use App\Message\ProjectAnalyse;
 use App\Message\ProjectAnalysePending;
-use App\Plugin\Service\Manager;
-use App\ProjectState;
+use App\Plugin\Manager;
 use App\Security\Roles;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
@@ -25,7 +24,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
-use EasyCorp\Bundle\EasyAdminBundle\Exception\EntityRemoveException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\InsufficientEntityPermissionException;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -42,7 +40,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Constraints\Count;
-
 use function Symfony\Component\String\u;
 use function Symfony\Component\Translation\t;
 
@@ -105,7 +102,8 @@ class ProjectCrudController extends AbstractCrudController
                 ->useEntryCrudForm(ProjectMemberCrudController::class)
                 ->setEntryIsComplex()
                 ->hideOnIndex()
-                ->hideWhenCreating(),
+                //->hideWhenCreating()
+            ,
             BooleanField::new('isPublic')
                 ->hideOnIndex(),
             BooleanField::new('isPublic')
@@ -182,11 +180,13 @@ class ProjectCrudController extends AbstractCrudController
         $entityInstance = $context->getEntity()->getInstance();
 
         try {
+//            $entityInstance->setState(ProjectState::PENDING);
+//            $this->updateEntity($this->container->get('doctrine')->getManagerForClass($context->getEntity()->getFqcn()), $entityInstance);
+//            $bus->dispatch(new ProjectAnalyseRunning($entityInstance->getId()));
             /**
              * @var Project $entityInstance
              */
             $bus->dispatch(new ProjectAnalysePending($entityInstance->getId()));
-            $res = TRUE;
         } catch (ForeignKeyConstraintViolationException $e) {
             $res = FALSE;
         }
@@ -287,7 +287,7 @@ class ProjectCrudController extends AbstractCrudController
          * @var $entityInstance Project
          */
         foreach ($entityInstance->getProjectMembers() as $projectMember) {
-            $entityManager->detach($projectMember);
+            //$entityManager->detach($projectMember);
         }
         parent::deleteEntity($entityManager, $entityInstance);
     }

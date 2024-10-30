@@ -6,16 +6,19 @@ use App\Entity\Project;
 use App\Entity\ScheduleUpdate;
 use App\Message\ProjectAnalysePending;
 use App\Message\SchedulerUpdate;
+use App\ProjectState;
 use App\Service\SchedulerUpdateService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Messenger\Message\RedispatchMessage;
 use Symfony\Component\Scheduler\Attribute\AsSchedule;
+use Symfony\Component\Scheduler\Event\PreRunEvent;
 use Symfony\Component\Scheduler\RecurringMessage;
 use Symfony\Component\Scheduler\Schedule;
 use Symfony\Component\Scheduler\ScheduleProviderInterface;
-use Symfony\Contracts\Cache\CacheInterface;
 
 #[AsSchedule('default')]
+#[AsEventListener(PreRunEvent::class, 'onMessage')]
 final class ProjectAnalysePendingSchedule implements ScheduleProviderInterface
 {
     private EntityManagerInterface $em;
@@ -62,6 +65,25 @@ final class ProjectAnalysePendingSchedule implements ScheduleProviderInterface
             );
     }
 
+    public function onMessage(PreRunEvent $event): void
+    {
+        $message = $event->getMessage();
+        if (
+            !($message instanceof RedispatchMessage) ||
+            !($message->envelope->getMessage() instanceof ProjectAnalysePending) ||
+            empty($message->envelope->getMessage()->getProjectId())
+        ) {
+            return;
+        }
+
+        $project = $this->em
+            ->getRepository(Project::class)
+            ->find($message->envelope->getMessage()->getProjectId());
+        if (!$project || $project->getState() !== ProjectState::IDLE) {
+            $event->shouldCancel(true);
+        }
+    }
+
     public function updateMessages(): void
     {
         $items = $this->schedulerUpdateService->getAll();
@@ -77,7 +99,6 @@ final class ProjectAnalysePendingSchedule implements ScheduleProviderInterface
                 if (!$project || empty($project->getPeriodicity())) {
                     continue;
                 }
-
                 $message = RecurringMessage::cron(
                     $project->getPeriodicity(),
                     new RedispatchMessage(new ProjectAnalysePending($project->getId()), 'analyse_low')

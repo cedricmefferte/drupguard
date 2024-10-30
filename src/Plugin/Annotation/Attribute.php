@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Plugin;
+namespace App\Plugin\Annotation;
 
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
 
@@ -12,6 +12,7 @@ abstract class Attribute
     protected string $entityClass = '';
     protected string $formClass = '';
     protected string $repositoryClass = '';
+    protected string $serviceClass = '';
 
     public function __construct(?array $options = null, ?string $id = null, ?string $name = null, ?string $entityClass = null, ?string $formClass = null, ?string $repositoryClass = null)
     {
@@ -60,5 +61,16 @@ abstract class Attribute
     public function getRepositoryClass(): string
     {
         return $this->repositoryClass;
+    }
+
+    public function getServiceClass(): string
+    {
+        return $this->serviceClass;
+    }
+
+    public function setServiceClass(string $serviceClass): self
+    {
+        $this->serviceClass = $serviceClass;
+        return $this;
     }
 }
