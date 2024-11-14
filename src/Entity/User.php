@@ -50,7 +50,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, ProjectMember>
      */
-    #[ORM\OneToMany(targetEntity: ProjectMember::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: ProjectMember::class, mappedBy: 'user', cascade: ['remove'], orphanRemoval: true)]
     private Collection $projectMembers;
 
     public function __construct()

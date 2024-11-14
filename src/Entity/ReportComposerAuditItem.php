@@ -31,7 +31,7 @@ class ReportComposerAuditItem
     private ?AnalyseLevelState $state = null;
 
     #[ORM\ManyToOne(inversedBy: 'items')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?ReportComposerAudit $reportComposerAudit = null;
 
     public function getId(): ?int

@@ -236,16 +236,6 @@ class ProjectCrudController extends AbstractCrudController
         return $queryBuilder;
     }
 
-    protected function setProjectToProjectMembers($entityInstance): void
-    {
-        foreach ($entityInstance->getProjectMembers() as $projectMember) {
-            if ($projectMember->getProject()) {
-                continue;
-            }
-            $projectMember->setProject($entityInstance);
-        }
-    }
-
     protected function removeUselessPluginType($entityInstance): void
     {
         $manager = $this->container->get(Manager::class);
@@ -269,27 +259,14 @@ class ProjectCrudController extends AbstractCrudController
 
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-        $this->setProjectToProjectMembers($entityInstance);
         $this->removeUselessPluginType($entityInstance);
         parent::persistEntity($entityManager, $entityInstance);
     }
 
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-        $this->setProjectToProjectMembers($entityInstance);
         $this->removeUselessPluginType($entityInstance);
         parent::updateEntity($entityManager, $entityInstance);
-    }
-
-    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
-    {
-        /**
-         * @var $entityInstance Project
-         */
-        foreach ($entityInstance->getProjectMembers() as $projectMember) {
-            //$entityManager->detach($projectMember);
-        }
-        parent::deleteEntity($entityManager, $entityInstance);
     }
 
     public static function getSubscribedServices(): array

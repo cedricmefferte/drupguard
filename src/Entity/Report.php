@@ -21,11 +21,11 @@ class Report
     #[ORM\Column(nullable: true, enumType: AnalyseLevelState::class)]
     private ?AnalyseLevelState $state = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(cascade: ['persist', 'remove'], orphanRemoval: true)]
     private ?ReportComposerAudit $composerAudit = null;
 
     #[ORM\ManyToOne(inversedBy: 'reports')]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?Project $project = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

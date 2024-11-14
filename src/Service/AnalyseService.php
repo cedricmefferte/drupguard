@@ -4,9 +4,7 @@ namespace App\Service;
 
 use App\AnalyseLevelState;
 use App\Entity\Project;
-use App\Entity\ProjectAnalyse;
 use App\Entity\Report;
-use App\Plugin\Exception\PluginTypeException;
 use App\Plugin\Manager;
 use App\Plugin\Service\Analyse;
 use App\Plugin\Service\Build;
@@ -56,8 +54,6 @@ class AnalyseService
         }
         $this->entityManager->persist($report);
         $this->entityManager->flush();
-
-        $project->setLastReport($report);
         $project->addReport($report);
         $project->setState(ProjectState::IDLE);
         $this->entityManager->persist($project);

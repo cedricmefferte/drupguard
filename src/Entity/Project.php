@@ -42,14 +42,14 @@ class Project
     /**
      * @var Collection<int, ProjectMember>
      */
-    #[ORM\OneToMany(targetEntity: ProjectMember::class, mappedBy: 'project', cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: ProjectMember::class, mappedBy: 'project', cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Assert\Valid()]
     private Collection $projectMembers;
 
     /**
      * @var Collection<int, Source>
      */
-    #[ORM\OneToMany(targetEntity: Source::class, mappedBy: 'project', cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Source::class, mappedBy: 'project', cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Assert\Count(max: 1)]
     #[Assert\Valid()]
     private Collection $sourcePlugins;
@@ -57,14 +57,14 @@ class Project
     /**
      * @var Collection<int, Build>
      */
-    #[ORM\OneToMany(targetEntity: Build::class, mappedBy: 'project', cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Build::class, mappedBy: 'project', cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Assert\Valid()]
     private Collection $buildPlugins;
 
     /**
      * @var Collection<int, Analyse>
      */
-    #[ORM\OneToMany(targetEntity: Analyse::class, mappedBy: 'project', cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Analyse::class, mappedBy: 'project', cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Assert\Count(min: 1)]
     #[Assert\Valid()]
     private Collection $analysePlugins;
@@ -82,13 +82,10 @@ class Project
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $emailExtra = null;
 
-    #[ORM\OneToOne()]
-    private ?Report $lastReport = null;
-
     /**
      * @var Collection<int, Report>
      */
-    #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'project', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'project', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $reports;
 
     public function __construct()
@@ -341,14 +338,7 @@ class Project
 
     public function getLastReport(): ?Report
     {
-        return $this->lastReport;
-    }
-
-    public function setLastReport(?Report $lastReport): static
-    {
-        $this->lastReport = $lastReport;
-
-        return $this;
+        return $this->reports->last();
     }
 
     /**

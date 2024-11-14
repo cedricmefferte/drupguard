@@ -37,7 +37,7 @@ class Group
     /**
      * @var Collection<int, ProjectMember>
      */
-    #[ORM\OneToMany(targetEntity: ProjectMember::class, mappedBy: 'groups')]
+    #[ORM\OneToMany(targetEntity: ProjectMember::class, mappedBy: 'groups', cascade: ['remove'], orphanRemoval: true)]
     private Collection $projectMembers;
 
     public function __construct()
