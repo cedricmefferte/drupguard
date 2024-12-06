@@ -1,0 +1,67 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+
+services:
+
+  App\DependencyInjection\DrupguardExtension:
+    tags: ['container.extension']
+
+## Functionnals classes (builder->build() / sourceResolver->resolve() / analyzer->analyse()  )
+######
+  project_analysis.plugin.abstract:
+    abstract: true
+
+  project_analysis.plugin.builder.abstract:
+    abstract: true
+
+  project_analysis.plugin.builder.composer:
+    class: App\ProjectAnalysis\Builder\ComposerBuilder
+    parent: project_analysis.plugin.builder.abstract
+    tags:
+      - { name: project_analysis.plugin.composer_builder, type: builder_resolver }
+
+  project_analysis.plugin.source_resolver.abstract:
+    abstract: true
+
+  project_analysis.plugin.source_resolver.git:
+    class: App\ProjectAnalysis\SourceResolver\Git
+    parent: project_analysis.plugin.source_resolver.abstract
+    tags:
+      - { name: project_analysis.plugin.source_resolver.git,
+          type: source_resolver
+      }
+
+  project_analysis.plugin.analyzer.abstract:
+    abstract: true
+
+  project_analysis.plugin.analyzer.git:
+    class: App\ProjectAnalysis\Analyzer\Git
+    parent: project_analysis.plugin.analyzer.abstract
+    tags:
+      - { name: project_analysis.plugin.analyzer.git,
+          type: analyzer
+      }
+
+#  App\Registry\PluginRegistry:
+#    arguments:
+#      $config: '%drupguard%'
+#    autowire: false
+
+  ## Data Classes
+  ######
+
+  App\Registry\FormRegistry: ~
+  App\Registry\EntityRegistry: ~
+  App\Registry\RepositoryRegistry: ~
+  App\Registry\EntityFieldRegistry: ~
+
+
+  ## Form classes => compilerPasse automatic configuration
+
+#  App\Form\FormHandler:
+#    tags: ['form.handler']
+

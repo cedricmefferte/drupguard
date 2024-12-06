@@ -8,6 +8,8 @@ use App\Entity\Project;
 use App\Message\ProjectAnalyse;
 use App\Message\ProjectAnalysePending;
 use App\Plugin\Manager;
+use App\Registry\FormRegistry;
+use App\Registry\PluginRegistry;
 use App\Security\Roles;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
@@ -45,6 +47,21 @@ use function Symfony\Component\Translation\t;
 
 class ProjectCrudController extends AbstractCrudController
 {
+
+    private $formRegistry;
+
+    private $pluginRegistry;
+
+    // todo remove boilerplate
+    public function __construct(
+         FormRegistry $formRegistry,
+         PluginRegistry $pluginRegistry
+         ,
+    ) {
+        $this->formRegistry = $formRegistry;
+        $this->pluginRegistry = $pluginRegistry;
+    }
+
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -112,34 +129,67 @@ class ProjectCrudController extends AbstractCrudController
             FormField::addTab('Plugins'),
         ];
 
-        $manager = $this->container->get(Manager::class);
-        $reflection = new \ReflectionClass(Project::class);
-        foreach ($manager->getPlugins() as $pluginInfo) {
-            $property = $pluginInfo->getId().'Plugins';
-            $collection = CollectionField::new($property, $pluginInfo->getName())
+//        $manager = $this->container->get(Manager::class);
+//        $reflection = new \ReflectionClass(Project::class);
+//        foreach ($manager->getPlugins() as $pluginInfo) {
+//            $property = $pluginInfo->getId().'Plugins';
+//            $collection = CollectionField::new($property, $pluginInfo->getName())
+//                ->setFormTypeOption('error_bubbling', false)
+//                ->setFormTypeOption('delete_empty', true)
+//                ->setEntryType($pluginInfo->getFormClass())
+//                ->setEntryIsComplex()
+//                ->renderExpanded()
+//                ->addCssClass($pluginInfo->getId().'-plugin-collection')
+//                ->addCssClass('plugin-collection')
+//                ->hideOnIndex();
+//
+//            $countAttribute = $reflection
+//                ->getProperty($property)
+//                ->getAttributes(Count::class, \ReflectionAttribute::IS_INSTANCEOF);
+//            $attr = ['data-plugin-collection-type' => $pluginInfo->getId()];
+//            if (!empty($countAttribute)) {
+//                $count = $countAttribute[0]->newInstance();
+//                if (null !== $count->min) {
+//                    $attr['data-plugin-collection-min'] = $count->min;
+//                }
+//                if (null !== $count->max) {
+//                    $attr['data-plugin-collection-max'] = $count->max;
+//                }
+//            }
+//            $collection->setFormTypeOption('row_attr', $attr);
+//            $fields[] = $collection;
+//        }
+
+        // TODO: progresssive migration here
+        $plugins = $this->pluginRegistry->getMainPluginKeys();
+
+        foreach ($plugins as  $pluginName) {
+            $property = $pluginName.'Plugins';
+
+            $collection = CollectionField::new($property, $pluginName)
                 ->setFormTypeOption('error_bubbling', false)
                 ->setFormTypeOption('delete_empty', true)
-                ->setEntryType($pluginInfo->getFormClass())
+                ->setEntryType($this->formRegistry->getFormClass($pluginName))
                 ->setEntryIsComplex()
                 ->renderExpanded()
-                ->addCssClass($pluginInfo->getId().'-plugin-collection')
+                ->addCssClass($pluginName.'-plugin-collection')
                 ->addCssClass('plugin-collection')
                 ->hideOnIndex();
 
-            $countAttribute = $reflection
-                ->getProperty($property)
-                ->getAttributes(Count::class, \ReflectionAttribute::IS_INSTANCEOF);
-            $attr = ['data-plugin-collection-type' => $pluginInfo->getId()];
-            if (!empty($countAttribute)) {
-                $count = $countAttribute[0]->newInstance();
-                if (null !== $count->min) {
-                    $attr['data-plugin-collection-min'] = $count->min;
-                }
-                if (null !== $count->max) {
-                    $attr['data-plugin-collection-max'] = $count->max;
-                }
-            }
-            $collection->setFormTypeOption('row_attr', $attr);
+//            $countAttribute = $reflection
+//                ->getProperty($property)
+//                ->getAttributes(Count::class, \ReflectionAttribute::IS_INSTANCEOF);
+//            $attr = ['data-plugin-collection-type' => $type];
+//            if (!empty($countAttribute)) {
+//                $count = $countAttribute[0]->newInstance();
+//                if (null !== $count->min) {
+//                    $attr['data-plugin-collection-min'] = $count->min;
+//                }
+//                if (null !== $count->max) {
+//                    $attr['data-plugin-collection-max'] = $count->max;
+//                }
+//            }
+//            $collection->setFormTypeOption('row_attr', $attr);
             $fields[] = $collection;
         }
 

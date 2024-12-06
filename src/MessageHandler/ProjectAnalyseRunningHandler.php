@@ -31,6 +31,7 @@ class ProjectAnalyseRunningHandler extends ProjectAnalyseHandlerAbstract
          * @var Project $project
          */
         $project = $this->repository->find($message->getProjectId());
+        // TODO: StateManager
         if (!$project || $project->getState() !== ProjectState::PENDING) {
             return;
         }

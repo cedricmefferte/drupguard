@@ -21,6 +21,9 @@ services:
             - '../src/Plugin/Source/Entity/'
             - '../src/Kernel.php'
 
+    App\DependencyInjection\DrupguardExtension:
+        tags: ['container.extension']
+
     security.access.role_hierarchy_voter:
         class: App\Security\Voter\RoleHierarchyVoter
 

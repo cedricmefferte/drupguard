@@ -1,0 +1,27 @@
+drupguard:
+  entity_fields:
+    App\Entity\Source:
+      fields:
+        name:
+          type: 'Symfony\Component\Form\Extension\Core\Type\TextType'
+          options:
+            required: true
+            label: 'Source'
+        url:
+          type: 'Symfony\Component\Form\Extension\Core\Type\UrlType'
+          options:
+            required: false
+            label: 'Source URL'
+        priority:
+          type: 'Symfony\Component\Form\Extension\Core\Type\IntegerType'
+          options:
+            required: true
+            label: 'Priority Level'
+
+    App\Entity\Build:
+      fields:
+        name:
+          type: 'Symfony\Component\Form\Extension\Core\Type\TextType'
+          options:
+            required: true
+            label: 'Build Name'

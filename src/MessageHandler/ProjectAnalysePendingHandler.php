@@ -19,13 +19,19 @@ class ProjectAnalysePendingHandler extends ProjectAnalyseHandlerAbstract {
         }
 
         $project = $this->repository->find($message->getProjectId());
+
+        // TODO: forward responsability to ProjectStateManager => $projectStateManager->stateIs(ProjectState::IDLE)
         if (!$project || $project->getState() !== ProjectState::IDLE) {
             return;
         }
 
+        // TODO: forward responsability to ProjectStateManager
         $project->setState(ProjectState::PENDING);
+
         $this->entityManager->persist($project);
         $this->entityManager->flush();
+
+        // TODO: keep only  this process here
         $event = new ProjectAnalyseRunning($project->getId());
         $this->bus->dispatch(
             // Be sure sql transaction end before sending new message

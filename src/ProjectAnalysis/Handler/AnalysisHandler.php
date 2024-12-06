@@ -1,14 +1,11 @@
 <?php
 
-namespace App\Service;
+namespace App\ProjectAnalysis\Handler;
 
 use App\AnalyseLevelState;
 use App\Entity\Project;
 use App\Entity\Report;
 use App\Plugin\Manager;
-use App\Plugin\Service\Analyse;
-use App\Plugin\Service\Build;
-use App\Plugin\Service\Source;
 use App\ProjectState;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Container\ContainerInterface;
@@ -16,7 +13,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 use function Symfony\Component\String\u;
 
-class AnalyseService
+class AnalysisHandler
 {
     protected ContainerInterface $serviceLocator;
     protected EntityManagerInterface $entityManager;
@@ -122,6 +119,8 @@ class AnalyseService
              // TODO: service resolver
             $service = $this->serviceLocator->get($typeInfo->getServiceClass());
             $currentReport = $service->analyse($project, $analyseEntity, $path);
+
+
             $this->entityManager->persist($currentReport);
             $this->entityManager->flush();
             $report->{'set' . mb_ucfirst(u($plugin->getType())->camel())}($currentReport);

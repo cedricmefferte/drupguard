@@ -2,6 +2,7 @@
 
 namespace App\Message;
 
+// TODO: rename Analyse to Analyze
 abstract class ProjectAnalyseAbstract implements \Stringable
 {
     private int $projectId;

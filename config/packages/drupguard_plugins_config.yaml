@@ -1,0 +1,36 @@
+drupguard:
+  plugins:
+    source:
+      form_class: 'App\Form\Plugin\Source'
+      entity_class: 'App\Entity\Plugin\Source'
+      repository_class: 'App\Repository\Source\Source'
+      plugin_types:
+        - name: 'git_source'
+          entity_class: 'App\Entity\Source\GitSourceEntity'
+          repository_class: 'App\Repository\Source\GitSourceRepository'
+          form_class: 'App\Form\Plugin\Type\Source\GitFormType'
+
+        - name: 'git2_source'
+          entity_class: 'App\Entity\Source\GitSourceEntity'
+          repository_class: 'App\Repository\Source\GitSourceRepository'
+          form_class: 'App\Form\Plugin\Type\Source\GitFormType'
+
+    build:
+      form_class: 'App\Form\Plugin\Build'
+      entity_class: 'App\Entity\Plugin\Build'
+      repository_class: 'App\Repository\Build'
+      plugin_types:
+        - name: 'composer_build'
+          entity_class: 'App\Entity\Build\ComposerBuildEntity'
+          repository_class: 'App\Repository\Build\ComposerBuildRepository'
+          form_class: 'App\Form\Plugin\Type\Build\ComposerBuildFormType'
+
+    analyse:
+      form_class: 'App\Form\Plugin\Analyse'
+      entity_class: 'App\Entity\Plugin\Analyse'
+      repository_class: 'App\Repository\Analyse'
+      plugin_types:
+        - name: 'composer_analyze'
+          entity_class: 'App\Entity\Analyze\ComposerAuditEntity'
+          repository_class: 'App\Repository\Analyze\ComposerAuditRepository'
+          form_class: 'App\Form\Plugin\Type\Analyze\ComposerAuditFormType'

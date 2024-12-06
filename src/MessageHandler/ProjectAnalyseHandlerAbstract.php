@@ -21,6 +21,7 @@ abstract class ProjectAnalyseHandlerAbstract
     public function __construct(EntityManagerInterface $entityManager, MessageBusInterface $bus)
     {
         $this->entityManager = $entityManager;
+        // TODO: decide IF registy could help here
         $this->repository = $entityManager->getRepository(Project::class);
         $this->bus = $bus;
     }
